@@ -1,0 +1,61 @@
+# Copy to config.toml and fill in your values.
+
+[telegram]
+# Get from https://my.telegram.org/apps
+app_id = 12345
+app_hash = "0123456789abcdef0123456789abcdef"
+# Where the login session is stored (the ONLY file persisted).
+# In docker use /data/session.json.
+session_file = "data/session.json"
+# "qr" (default, prints QR to logs) or "phone". Env LOGIN_METHOD overrides.
+login_method = "qr"
+# phone = "+8613800138000" # optional; prompted if empty
+
+# Outbound proxies. Only the first entry is used currently.
+# [[proxy]]
+# type = "socks5"      # socks5 | http | mtproxy
+# addr = "127.0.0.1:1080"
+# username = ""
+# password = ""
+# secret = ""          # mtproxy only, hex secret (may start with "ee")
+
+[listen]
+# Only messages from this bot are processed; everything else is ignored
+# and never stored.
+username = "HDHiveBot"
+
+[database]
+path = "data/app.db"
+# On the first run (no cursor yet) only this many recent messages are
+# replayed; afterwards history is fetched incrementally by message-id cursor.
+history_limit = 50
+
+[checkin]
+enabled = true
+time = "09:00"      # local time (TZ env in docker)
+jitter_minutes = 30 # random 0..jitter added to the fixed time
+command = "签到"      # message sent to the bot
+
+[notify.feishu]
+enabled = false
+webhook = "https://open.feishu.cn/open-apis/bot/v2/hook/xxxx"
+
+[notify.tgbot]
+enabled = false
+bot_token = "123456:ABC-DEF"
+chat_id = 123456789
+
+[log]
+# env_logger-style: bare token is the global default, then per-component
+# overrides. "tg" (gotd internals) defaults to warn and never inherits the
+# global level — it is extremely chatty at debug.
+# Components: tg, gaps, peers, checkin, notify, privacy
+level = "info"     # e.g. "debug,tg=info" or "debug"
+formatter = "text"
+
+# Authorization-level toggles on the login session (Telegram → Settings →
+# Devices → this device). Both default to true: this bot needs neither calls
+# nor secret chats.
+[privacy]
+disable_calls = true
+disable_secret_chats = true

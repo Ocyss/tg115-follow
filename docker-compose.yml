@@ -1,0 +1,15 @@
+services:
+  tg115-follow:
+    build: .
+    container_name: tg115-follow
+    restart: unless-stopped
+    # tty + stdin_open allow interactive phone login via `docker attach` or
+    # `docker compose exec tg115-follow tg115-follow login -method phone`.
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./data:/data
+    environment:
+      # qr (default, QR printed to logs) or phone (interactive).
+      - LOGIN_METHOD=${LOGIN_METHOD:-qr}
+      - TZ=${TZ:-Asia/Shanghai}
